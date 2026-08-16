@@ -1,100 +1,85 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  
-  <title>Domino By Indra</title> 
-
-  <style>
-    /* KUNCI MUTLAK PADA PEMBUNGKUS LUAR */
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      position: fixed; /* Mencegah address bar terdorong */
-      top: 0; 
-      left: 0; 
-      right: 0; 
-      bottom: 0;
-      overflow: hidden; /* Menghilangkan scrollbar */
-      background-color: #0d1117; 
-      overscroll-behavior-y: none; /* Mencegah pull-to-refresh di HP */
-    }
-
-    iframe {
-      border: none;
-      width: 100%;  
-      height: 100%; 
-      display: block;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    /* Mencegah seleksi teks secara visual menggunakan CSS */
-    * {
-      -webkit-user-select: none;
-      -khtml-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      -o-user-select: none;
-      user-select: none;
-    }
-  </style>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0d1117">
+    
+    <title>Domino By Indra</title>
+    <style>
+        html, body {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden; background-color: #0d1117; overscroll-behavior-y: none;
+        }
+        iframe { border: none; width: 100%; height: 100%; display: block; }
+        
+        /* Layer transparan penangkap sentuhan pertama tamu */
+        #fs-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 9999; background: transparent; cursor: pointer;
+        }
+    </style>
 </head>
-<!-- Menambahkan proteksi inline pada body -->
-<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
+<body>
+    
+    <div id="fs-overlay"></div>
 
-  <iframe src="https://script.google.com/macros/s/AKfycbwFRY_z8sSwU_QuPctRhCSJDg48A6RpIbH_VdMwXncKhxQ6pPm8nqRC1p5OkJlV4DJQ/exec" allow="autoplay; encrypted-media; clipboard-read; clipboard-write; fullscreen"></iframe>
+    <iframe id="undangan-frame" allow="autoplay; encrypted-media; clipboard-read; clipboard-write; fullscreen"></iframe>
+    
+    <script>
+        // 1. LOGIKA FULL SCREEN (Browser mewajibkan sentuhan pertama)
+        document.getElementById("fs-overlay").addEventListener("click", function() {
+            var doc = document.documentElement;
+            if (doc.requestFullscreen) { 
+                doc.requestFullscreen(); 
+            } else if (doc.webkitRequestFullscreen) { 
+                doc.webkitRequestFullscreen(); // Untuk Safari/iOS
+            } else if (doc.msRequestFullscreen) { 
+                doc.msRequestFullscreen(); // Untuk IE
+            }
+            
+            // Setelah disentuh 1x dan fullscreen aktif, hancurkan layer ini 
+            // agar tamu bisa menekan tombol Buka Undangan di dalam Iframe
+            this.style.display = "none";
+        });
 
-  <!-- SCRIPT ANTI INSPECT & KLIK KANAN -->
-  <script>
-    // 1. Mematikan Klik Kanan (Context Menu) secara global
-    document.addEventListener('contextmenu', function(e) {
-      e.preventDefault();
-    }, false);
-
-    // 2. Mematikan Shortcut Keyboard untuk Developer Tools di PC/Laptop
-    document.onkeydown = function(e) {
-      // F12
-      if(e.keyCode === 123) {
-        return false;
-      }
-      // Ctrl+Shift+I (Inspect)
-      if(e.ctrlKey && e.shiftKey && e.keyCode === 73) { // 73 adalah kode ASCII untuk 'I'
-        return false;
-      }
-      // Ctrl+Shift+C (Inspect Element)
-      if(e.ctrlKey && e.shiftKey && e.keyCode === 67) { // 67 adalah kode ASCII untuk 'C'
-        return false;
-      }
-      // Ctrl+Shift+J (Console)
-      if(e.ctrlKey && e.shiftKey && e.keyCode === 74) { // 74 adalah kode ASCII untuk 'J'
-        return false;
-      }
-      // Ctrl+U (View Source)
-      if(e.ctrlKey && e.keyCode === 85) { // 85 adalah kode ASCII untuk 'U'
-        return false;
-      }
-      // Ctrl+S (Save Page)
-      if(e.ctrlKey && e.keyCode === 83) { // 83 adalah kode ASCII untuk 'S'
-        return false;
-      }
-      // Ctrl+P (Print Page)
-      if(e.ctrlKey && e.keyCode === 80) { // 80 adalah kode ASCII untuk 'P'
-        return false;
-      }
-    };
-
-    // 3. (Opsional) Debugger Trap: Mengganggu orang yang berhasil membuka DevTools di PC
-    setInterval(function() {
-      var before = new Date().getTime();
-      debugger; // Akan freeze jika devtools terbuka
-      var after = new Date().getTime();
-      if (after - before > 100) {
-        // Eksekusi jika DevTools terdeteksi (opsional, bisa dibiarkan kosong)
-        console.clear();
-      }
-    }, 1000);
-  </script>
+        // 2. LOGIKA FORWARDER ASLI ANDA
+        var scriptUrl = "https://script.google.com/macros/s/AKfycbwFRY_z8sSwU_QuPctRhCSJDg48A6RpIbH_VdMwXncKhxQ6pPm8nqRC1p5OkJlV4DJQ/exec";
+        
+        // Ambil parameter nama dari URL custom domain (desy-bayu.indopz.my.id)
+        var params = window.location.search; // Mengambil ?to=Nama
+        var hash = window.location.hash;     // Mengambil /#Nama
+        
+        var finalUrl = scriptUrl;
+        
+        // Logika Penerus (Forwarder) ke Google Apps Script
+        if (params) {
+            finalUrl += params;
+        } else if (hash) {
+            // Ubah format /#Budi-Santoso menjadi parameter ?to=Budi-Santoso agar terbaca sistem
+            var namaTamu = hash.substring(1);
+            finalUrl += "?to=" + namaTamu;
+        }
+        
+        // Terapkan URL gabungan ke dalam Iframe
+        document.getElementById("undangan-frame").src = finalUrl;
+    </script>
 </body>
 </html>
+```
+
+***
+
+### 🚀 IndoBOT Idea
+* **Logic & Functionality:** Karena ada layer `#fs-overlay` di GitHub, tamu Anda harus mengetuk layar 2 kali (ketukan pertama untuk memecahkan layer pembatas *Fullscreen*, ketukan kedua untuk mengklik tombol "Buka Undangan" di undangan aslinya).
+* **UX Performance (Sangat Disarankan):** Jika Anda tidak ingin tamu merasa "kok tombol Buka Undangannya harus ditekan 2 kali baru mau terbuka?", saran saya **hapus `#fs-overlay` di file GitHub ini**, dan pindahkan kode *Fullscreen* langsung ke dalam **Google Apps Script** Anda!
+* Anda hanya perlu menambahkan 3 baris kode ke dalam skrip `Index.html` (Apps Script), tepat di dalam fungsi `function bukaUndangan() { ... }`:
+  ```javascript
+  let doc = document.documentElement;
+  if (doc.requestFullscreen) doc.requestFullscreen();
+  else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
