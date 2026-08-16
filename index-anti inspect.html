@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <title>Desy & Bayu</title> 
+
+  <style>
+    /* KUNCI MUTLAK PADA PEMBUNGKUS LUAR */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      position: fixed; /* Mencegah address bar terdorong */
+      top: 0; 
+      left: 0; 
+      right: 0; 
+      bottom: 0;
+      overflow: hidden; /* Menghilangkan scrollbar */
+      background-color: #0d1117; 
+      overscroll-behavior-y: none; /* Mencegah pull-to-refresh di HP */
+    }
+
+    iframe {
+      border: none;
+      width: 100%;  
+      height: 100%; 
+      display: block;
+    }
+    
+    /* Mencegah seleksi teks secara visual menggunakan CSS */
+    * {
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -o-user-select: none;
+      user-select: none;
+    }
+  </style>
+</head>
+<!-- Menambahkan proteksi inline pada body -->
+<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
+
+  <iframe src="https://script.google.com/macros/s/AKfycbwFRY_z8sSwU_QuPctRhCSJDg48A6RpIbH_VdMwXncKhxQ6pPm8nqRC1p5OkJlV4DJQ/exec" allow="autoplay; encrypted-media; clipboard-read; clipboard-write; fullscreen"></iframe>
+
+  <!-- SCRIPT ANTI INSPECT & KLIK KANAN -->
+  <script>
+    // 1. Mematikan Klik Kanan (Context Menu) secara global
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    }, false);
+
+    // 2. Mematikan Shortcut Keyboard untuk Developer Tools di PC/Laptop
+    document.onkeydown = function(e) {
+      // F12
+      if(e.keyCode === 123) {
+        return false;
+      }
+      // Ctrl+Shift+I (Inspect)
+      if(e.ctrlKey && e.shiftKey && e.keyCode === 73) { // 73 adalah kode ASCII untuk 'I'
+        return false;
+      }
+      // Ctrl+Shift+C (Inspect Element)
+      if(e.ctrlKey && e.shiftKey && e.keyCode === 67) { // 67 adalah kode ASCII untuk 'C'
+        return false;
+      }
+      // Ctrl+Shift+J (Console)
+      if(e.ctrlKey && e.shiftKey && e.keyCode === 74) { // 74 adalah kode ASCII untuk 'J'
+        return false;
+      }
+      // Ctrl+U (View Source)
+      if(e.ctrlKey && e.keyCode === 85) { // 85 adalah kode ASCII untuk 'U'
+        return false;
+      }
+      // Ctrl+S (Save Page)
+      if(e.ctrlKey && e.keyCode === 83) { // 83 adalah kode ASCII untuk 'S'
+        return false;
+      }
+      // Ctrl+P (Print Page)
+      if(e.ctrlKey && e.keyCode === 80) { // 80 adalah kode ASCII untuk 'P'
+        return false;
+      }
+    };
+
+    // 3. (Opsional) Debugger Trap: Mengganggu orang yang berhasil membuka DevTools di PC
+    setInterval(function() {
+      var before = new Date().getTime();
+      debugger; // Akan freeze jika devtools terbuka
+      var after = new Date().getTime();
+      if (after - before > 100) {
+        // Eksekusi jika DevTools terdeteksi (opsional, bisa dibiarkan kosong)
+        console.clear();
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
